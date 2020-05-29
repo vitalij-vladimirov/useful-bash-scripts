@@ -1,0 +1,19 @@
+# This is Ubuntu terminal command line replacer
+# Example: 11:30:44 ~/projects/project (branch-name)$
+#
+# 1) mcedit ~/.bachrc
+# 2) copy->paste bottom script
+# 3) source ~/.bachrc
+
+# Remove user, add timestamp, add git branch
+force_color_prompt=yes
+color_prompt=yes
+parse_git_branch() {
+ git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+if [ "$color_prompt" = yes ]; then
+ PS1='\t \[\033[01;31m\]\w\[\033[01;32m\]$(parse_git_branch)\[\033[00m\]$ '
+else
+ PS1='\t \w$(parse_git_branch)$ '
+fi
+unset color_prompt force_color_prompt
