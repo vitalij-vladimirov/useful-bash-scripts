@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# curl https://github.com/vitalij.vladimirov/git-config/raw/hash/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
+
+BRANCHES_TO_SKIP=(master dev development testing test prod production)
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+BRANCH_NAME="${BRANCH_NAME##*/}"
+
+IFS='-' read -r -a BRANCH_NAME_PART <<< "$BRANCH_NAME"
+BRANCH_ID="${BRANCH_NAME_PART[0]}"-"${BRANCH_NAME_PART[1]}"
+
+BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
+BRANCH_IN_COMMIT=$(grep -c "\[$BRANCH_ID\]" $1)
+
+if [ -n "$BRANCH_ID" ] && ! [[ $BRANCH_EXCLUDED -eq 1 ]] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
+  sed -i.bak -e "1s/^/$BRANCH_ID: /" $1
+fi
