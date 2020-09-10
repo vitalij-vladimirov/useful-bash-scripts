@@ -16,7 +16,7 @@ parse_git_branch() {
 
  if [ -z "$branch_name" ]; then
   return
- fi;
+ fi
 
  splitted_branch_name=(${branch_name//-/ })
 
@@ -25,16 +25,15 @@ parse_git_branch() {
  if [ ${#splitted_branch_name[@]} -le 2 ] || [ ${#splitted_branch_name[0]} -gt 3 ]; then
   echo $full_branch_name_print
   return
- fi;
+ fi
 
  if [ -n "${splitted_branch_name[1]}${splitted_branch_name[1]}" ]  ; then
   echo " (${splitted_branch_name[0]}-${splitted_branch_name[1]})"
  else
   echo $full_branch_name_print
- fi;
+ fi
 }
 if [ "$color_prompt" = yes ]; then
-# PS1='\t \[\033[01;31m\]\w\[\033[01;32m\]$(parse_git_branch)\[\033[00m\]$ '
  PS1='\t \[\033[01;31m\]\w\[\033[01;32m\]$(parse_git_branch)\[\033[00m\]$ '
 else
  PS1='\t \w$(parse_git_branch)$ '
