@@ -13,6 +13,11 @@ get_git_branch() {
 }
 parse_git_branch() {
  branch_name=$(get_git_branch)
+
+ if [ -z "$branch_name" ]; then
+  return
+ fi;
+
  splitted_branch_name=(${branch_name//-/ })
 
  full_branch_name_print=" ($branch_name)"
