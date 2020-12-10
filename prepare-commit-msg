@@ -6,10 +6,11 @@ BRANCHES_TO_SKIP=(master dev development testing test prod production)
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 BRANCH_NAME="${BRANCH_NAME##*/}"
+BRANCH_NAME="${BRANCH_NAME//_/-}"
 
 IFS='-' read -r -a BRANCH_NAME_PART <<< "$BRANCH_NAME"
 
-if [ ${#BRANCH_NAME_PART[@]} -ge 1 ] && [ ${#BRANCH_NAME_PART[0]} -le 4 ] && [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ]; then
+if [ ${#BRANCH_NAME_PART[@]} -ge 1 ] && [ ${#BRANCH_NAME_PART[0]} -le 6 ] && [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ] && [ ${#BRANCH_NAME_PART[1]} -le 7 ]; then
   BRANCH_ID="${BRANCH_NAME_PART[0]}"-"${BRANCH_NAME_PART[1]}"
 
   BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
