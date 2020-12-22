@@ -10,7 +10,7 @@ BRANCH_NAME="${BRANCH_NAME//_/-}"
 
 IFS='-' read -r -a BRANCH_NAME_PART <<< "$BRANCH_NAME"
 
-if [ ${#BRANCH_NAME_PART[@]} -ge 1 ] && [ ${#BRANCH_NAME_PART[0]} -le 6 ] && [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ] && [ ${#BRANCH_NAME_PART[1]} -le 7 ]; then
+if [ ${#BRANCH_NAME_PART[@]} -ge 1 ] && [ ${#BRANCH_NAME_PART[0]} -le 8 ] && [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ] && [ ${#BRANCH_NAME_PART[1]} -le 7 ]; then
   BRANCH_ID="${BRANCH_NAME_PART[0]}"-"${BRANCH_NAME_PART[1]}"
 
   BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
