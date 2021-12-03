@@ -2,21 +2,30 @@
 
 # curl https://raw.githubusercontent.com/vitalij-vladimirov/git-config/master/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
 
-BRANCHES_TO_SKIP=(master dev development testing test prod production)
+BRANCHES_TO_SKIP=(master main dev development testing test prod production 0.x 1.x 2.x 3.x 4.x 5.x)
 
 BRANCH_NAME=$(git symbolic-ref --short HEAD)
 BRANCH_NAME="${BRANCH_NAME##*/}"
 BRANCH_NAME="${BRANCH_NAME//_/-}"
 
-IFS='-' read -r -a BRANCH_NAME_PART <<< "$BRANCH_NAME"
-
-if [ ${#BRANCH_NAME_PART[@]} -ge 1 ] && [ ${#BRANCH_NAME_PART[0]} -le 8 ] && [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ] && [ ${#BRANCH_NAME_PART[1]} -le 7 ]; then
-  BRANCH_ID="${BRANCH_NAME_PART[0]}"-"${BRANCH_NAME_PART[1]}"
-
-  BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
-  BRANCH_IN_COMMIT=$(grep -c "\[$BRANCH_ID\]" $1)
-
-  if [ -n "$BRANCH_ID" ] && ! [[ $BRANCH_EXCLUDED -eq 1 ]] && ! [[ $BRANCH_IN_COMMIT -ge 1 ]]; then 
-    sed -i.bak -e "1s/^/$BRANCH_ID: /" $1
-  fi
+IS_BRANCH_EXCLUDED=$(printf "%s\n" "${BRANCHES_TO_SKIP[@]}" | grep -c "^$BRANCH_NAME$")
+if [ $IS_BRANCH_EXCLUDED -eq 1 ]; then
+  exit;
 fi;
+
+IFS='-' read -r -a BRANCH_NAME_PART <<< "$BRANCH_NAME"
+if [ ${#BRANCH_NAME_PART[@]} -le 1 ] || [ ${#BRANCH_NAME_PART[0]} -ge 7 ] || ! [ -z "${BRANCH_NAME_PART[1]##[0-9]*}" ] || [ ${#BRANCH_NAME_PART[1]} -ge 7 ]; then
+  exit;
+fi;
+
+BRANCH_ID="${BRANCH_NAME_PART[0]}"-"${BRANCH_NAME_PART[1]}"
+if ! [ -n "$BRANCH_ID" ]; then
+  exit;
+fi;
+
+IS_BRANCH_ID_FOUND_IN_COMMIT_MSG=$(echo "$1" | grep -c "$BRANCH_ID")
+if [ $IS_BRANCH_ID_FOUND_IN_COMMIT_MSG -ge 1 ]; then
+  exit;
+fi
+
+sed -i.bak -e "1s/^/$BRANCH_ID: /" $1
