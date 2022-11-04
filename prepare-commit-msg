@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# curl https://raw.githubusercontent.com/vitalij-vladimirov/git-config/master/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
+# curl https://raw.githubusercontent.com/vitalij-vladimirov/useful-bash-scripts/master/prepare-commit-msg > .git/hooks/prepare-commit-msg && chmod u+x .git/hooks/prepare-commit-msg
 
 BRANCHES_TO_SKIP=(master main dev development testing test prod production 0.x 1.x 2.x 3.x 4.x 5.x)
 
