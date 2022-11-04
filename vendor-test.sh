@@ -5,8 +5,9 @@
 # To test library locally it needs to be installed (composer require) and then mocked from local location as a symlink.
 # This script helps to create symlink running less commands.
 #   1. Run `composer install` if library is not installed yet.
-#   2. Run `./vendor-test.sh library-name` to mock library (specify your library instead of `library-name`)
-# To rollback original library version run `composer install` again.
+#   2. Run `./vendor-test.sh library-name` to mock library (specify your library instead of `library-name`).
+#      Originally installed library will be replaced with local mock.
+# To rollback original library version remove symlink manually and run `composer install`.
 #
 # Your must include volume specified in LIBS_DIR and run it in the same directory inside of the image.
 # In any other cases symlink will not work inside of docker image.
@@ -38,7 +39,7 @@ if [ ! -d "$TEST_LIB_DIR" ]; then
   exit
 fi
 
-TEST_LIB_VENDOR_DIR="${VENDOR_DIR}${1}"
+TEST_LIB_VENDOR_DIR="${FULL_VENDOR_PATH}/${1}"
 if [ -d "$TEST_LIB_VENDOR_DIR" ]; then
   rm -rf "$TEST_LIB_VENDOR_DIR"
 fi
@@ -46,3 +47,4 @@ fi
 ln -s "$TEST_LIB_DIR" "$TEST_LIB_VENDOR_DIR"
 
 echo -e "\033[32mLibrary testing symlink created!\033[0m"
+echo "Symlink path: $TEST_LIB_VENDOR_DIR"
